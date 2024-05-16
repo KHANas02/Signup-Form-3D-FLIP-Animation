@@ -1,0 +1,224 @@
+@import url("https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300&family=Noto+Serif:wght@700&display=swap");
+
+* {
+  box-sizing: border-box;
+  position: relative;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  font-family: "Noto Sans TC", sans-serif;
+}
+
+html {
+  height: 100%;
+}
+body {
+  min-height: 100%;
+  background: #000
+    url("https://images.unsplash.com/photo-1607274330545-4b2ab57bdff7?crop=entropy&cs=srgb&fm=jpg&ixid=MXwxNDU4OXwwfDF8cmFuZG9tfHx8fHx8fHw&ixlib=rb-1.2.1&q=85")
+    center center;
+  background-size: cover;
+  color: #fff;
+}
+
+p {
+  line-height: 1.6;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5 {
+  margin: 0 0 1rem;
+  font-family: "Noto Serif", serif;
+}
+
+#app {
+  --duration: 0.8s;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr;
+  grid-gap: 3rem;
+  align-items: center;
+  min-height: 100vh;
+  perspective: 1000px;
+  padding: 2rem;
+
+  > .promo-text {
+    h2 {
+      font-size: 3rem;
+    }
+
+    grid-row: 1;
+    grid-column: 1;
+  }
+
+  &[data-state="form"] {
+    > form {
+      grid-row: 1 / -1;
+      grid-column: 1 / -1;
+      justify-self: center;
+    }
+
+    [data-show]:not([data-show="form"]) {
+      display: none;
+    }
+
+    .inputs {
+      animation: flip 0.3s var(--duration) both;
+
+      @keyframes flip {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+    }
+  }
+
+  &[data-state="home"] {
+    .plant {
+      font-size: 8rem;
+    }
+    [data-show]:not([data-show="home"]) {
+      display: none;
+    }
+  }
+}
+
+form {
+  padding: 1.5rem;
+  --background: #fffd;
+  color: #000;
+  border-radius: 1rem;
+  display: grid;
+  justify-items: center;
+  z-index: 5;
+
+  h2 {
+    color: green;
+  }
+}
+
+.inputs {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin: 1rem 0;
+  width: 100%;
+}
+
+.plant {
+  --transform: translateY(-80%) var(--flip-scale, scale(1));
+  font-size: 5rem;
+  transform: var(--transform);
+  margin-bottom: -0.8em;
+  background: #fff;
+  padding: 1rem;
+  border-radius: 1rem;
+  box-shadow: 0 0.5rem 1rem #0002;
+}
+
+input,
+textarea {
+  box-shadow: 0 0.5rem 1rem #0001;
+  border-radius: 0.75em;
+  font: inherit;
+  border: none;
+  padding: 0.5rem 1rem;
+}
+
+button {
+  appearance: none;
+  color: white;
+  background: green;
+  border: none;
+  border-radius: 100000rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  padding: 1rem 2rem;
+  cursor: pointer;
+
+  &:focus {
+    outline: none;
+  }
+}
+
+[data-flip] {
+  transition: transform 1s;
+
+  &[data-flipping] {
+    transition: none;
+    transform: var(--flip-translate) var(--transform, translate(0, 0));
+    --flip-translate: translate(calc(-1px * var(--dx)), calc(-1px * var(--dy)));
+    --flip-scale: scale(calc(1 / var(--dw)), calc(1 / var(--dh)));
+  }
+}
+
+.background {
+  &,
+  .background-inner {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    margin: auto;
+    border-radius: inherit;
+  }
+
+  .background-inner {
+    display: block;
+    content: "";
+    background: var(--background);
+  }
+
+  transform-origin: 0 0;
+  transform-style: preserve-3d;
+
+  .background-inner {
+    transform-style: preserve-3d;
+    transition: transform var(--duration);
+  }
+
+  [data-state="home"] & .background-inner {
+    transform: rotateY(0.5turn);
+  }
+
+  [data-state="form"] & .background-inner {
+    transform: rotateY(1turn);
+  }
+
+  &[data-flipping] {
+    transform: var(--flip-translate) var(--flip-scale)
+      var(--transform, translate(0, 0));
+  }
+}
+
+#app {
+  &::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    margin: auto;
+    background: #000c;
+    opacity: 0;
+    z-index: 2;
+    transition: opacity var(--duration);
+    pointer-events: none;
+  }
+
+  &[data-state="form"]::before {
+    opacity: 1;
+    pointer-events: auto;
+  }
+}
